@@ -1,245 +1,217 @@
-// ------------------------------
-// 1. بتلات متحركة
-// ------------------------------
-function createPetal() {
-    const petal = document.createElement('div');
-    petal.classList.add('petal');
-    petal.innerHTML = ['🌸','🌺','🌹','💮','✨','💖'][Math.floor(Math.random()*6)];
-    petal.style.left = Math.random() * 100 + '%';
-    petal.style.fontSize = (15 + Math.random() * 20) + 'px';
-    petal.style.animationDuration = (5 + Math.random() * 6) + 's';
-    document.getElementById('petalsContainer').appendChild(petal);
-    setTimeout(() => petal.remove(), 11000);
-}
-setInterval(createPetal, 700);
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>𝑽𝑬𝑳𝑶𝑹𝑨 هدايا من القلب</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
 
-// ------------------------------
-// 2. مؤشر كتابة (Typing effect)
-// ------------------------------
-const motivations = [
-    "💖 إبتسامة حبيبك هديتنا الحقيقية ❤️❤️❤️",
-    "كل قطعة مصنوعة يدويًا بحب🌸",
-    "لأن الحب يستحق أن يُهدى بورق وخيط✨",
-    "اختاري الهدية اللي تعبر عن مشاعرك🎀"
-];
-let motIndex = 0;
-let charIndex = 0;
-function typeMotivation() {
-    if (charIndex < motivations[motIndex].length) {
-        document.getElementById("motivationText").innerHTML = "✨ " + motivations[motIndex].substring(0, charIndex + 1);
-        charIndex++;
-        setTimeout(typeMotivation, 80);
-    } else {
-        setTimeout(() => {
-            charIndex = 0;
-            motIndex = (motIndex + 1) % motivations.length;
-            typeMotivation();
-        }, 3000);
-    }
-}
-typeMotivation();
+    <!-- خلفيات -->
+    <div class="animated-bg" id="animatedBg"></div>
+    <div class="petals-container" id="petalsContainer"></div>
+    <canvas id="sparkleCanvas"></canvas>
+    <div class="hearts-bg" id="heartsBg"></div>
 
-// ------------------------------
-// 3. شعار يومي
-// ------------------------------
-const dailyMessages = {
-    0: "💝 الأحد: يوم الورود البيضاء",
-    1: "💖 الإثنين: ابدئي أسبوعك بهدية حب",
-    2: "💗 الثلاثاء: اختاري الخيوط الوردية",
-    3: "💕 الأربعاء: هدية منتصف الأسبوع",
-    4: "💓 الخميس: استعدي لعطلة رومانسية",
-    5: "💞 الجمعة: يوم العائلة والحب",
-    6: "💘 السبت: نهاية أسبوع سعيدة بهدية"
-};
-const day = new Date().getDay();
-document.getElementById("dailyBadge").innerHTML = dailyMessages[day];
+    <!-- موسيقى -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+    </audio>
+    <button class="music-toggle" id="musicToggle" title="تشغيل الموسيقى">🎵</button>
 
-// ------------------------------
-// 4. فيديو الهيرو (ضعي رابطك هنا)
-// ------------------------------
-const heroVideo = document.getElementById("heroVideo");
-if (heroVideo) {
-    // ضعي رابط الفيديو أو GIF من TOP4TOP هنا
-    heroVideo.src = "https://l.top4top.io/m_3771sao671.mp4"; // اكتبي الرابط هنا بالكامل
-    heroVideo.load();
-}
+    <!-- زر تبديل الوضع -->
+    <button class="theme-toggle" id="themeToggle">🌙</button>
 
-// ------------------------------
-// 5. خلفية متغيرة حسب الوقت (نهار/ليل تلقائي + زر)
-// ------------------------------
-function setThemeByTime() {
-    const hour = new Date().getHours();
-    if (hour >= 19 || hour < 6) {
-        document.body.classList.add('dark-mode', 'night');
-        document.body.classList.remove('day');
-        document.getElementById("themeToggle").innerHTML = "☀️";
-    } else {
-        document.body.classList.add('day');
-        document.body.classList.remove('dark-mode', 'night');
-        document.getElementById("themeToggle").innerHTML = "🌙";
-    }
-}
-setThemeByTime();
-document.getElementById("themeToggle").addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-    document.getElementById("themeToggle").innerHTML = isDark ? "☀️" : "🌙";
-});
+    <!-- أيقونة السلة -->
+    <button class="cart-icon-btn" id="cartIconBtn">
+        🛒 <span class="cart-count" id="cartCount">0</span>
+    </button>
 
-// ------------------------------
-// 6. المناسبات
-// ------------------------------
-const occasionSuggestions = {
-    birthday: "🎂 عيد ميلاد: تاج ورقى باسم الشخص مع زهور صغيرة",
-    eid: "🕌 بعد العيد: علبة ورد وخيوط ذهبية مكتوب عليها كل عام وأنتم بخير",
-    engagement: "💍 خطوبة: صندوق ورقي أبيض وذهبي مع خيوط لؤلؤية",
-    wedding: "🕯️ ذكرى زواج: لوحة خشبية بأسمائكم وتاريخ الزفاف",
-    love: "💘 عيد حب: باقة ورد بالخيوط الحمراء + قلب منقوش عليه اسمكما",
-    apology: "🕊️ اعتذار/صلح: رسالة معطرة بخيوط حرير + وردة بيضاء",
-    distance: "✈️ بعيد عنك: خريطة ورقية للمسافة بينكما وخيط يوصلكما"
-};
-document.querySelectorAll('.occasion-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const occ = card.dataset.occasion;
-        document.getElementById('occasionMessage').innerHTML = `<strong>🎁 اقتراح هدية:</strong> ${occasionSuggestions[occ] || "هدية مميزة بتناسب مناسبتك الجميلة 💕"}`;
-    });
-});
+    <!-- شريط التنقل العلوي -->
+    <nav class="top-nav desktop-only">
+        <div class="logo-area">
+            <img src="https://i.top4top.io/p_377142gkw1.jpg" alt="Velora" onerror="this.style.display='none'">
+            <span class="brand-name">𝑽𝑬𝑳𝑶𝑹𝑨</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#home" class="nav-box">الرئيسية 🏠</a></li>
+            <li><a href="#products" class="nav-box">المنتجات 🎁</a></li>
+            <li><a href="#occasions" class="nav-box">المناسبات 🌸</a></li>
+            <li><a href="#testimonials" class="nav-box">الآراء 💬</a></li>
+            <li><a href="#contact" class="nav-box">تواصل 📞</a></li>
+        </ul>
+    </nav>
 
-// ------------------------------
-// 7. المنتجات + تقييم + أفضل مبيع
-// ------------------------------
-let products = [
-    { media: "https://l.top4top.io/p_3771f9a5l1.jpg", name: "قلب بالخيوط الوردي ♡", price: "25$", rating: 5, bestSeller: true },
-    { media: "https://h.top4top.io/p_3771pjm5b1.jpg", name: "باقة ورق باسمكما ♡", price: "35$", rating: 4, bestSeller: false },
-    { media: "https://a.top4top.io/p_37719s3n81.jpg", name: "صندوق الخيوط الذهبي ♡", price: "45$", rating: 5, bestSeller: false }
-];
+    <main class="main-content">
 
-let testimonials = [
-    { text: "الهدية جاتني بالاسم المنقوش عليه، زوجي انبهر 🤍", author: "سارة", rating: 5 },
-    { text: "أجمل بوكيه ورد شفته بحياتي، خيوط ذهبية وناعمة", author: "مريم", rating: 5 },
-    { text: "توصيل سريع والشغل يدوي دقيق جدًا", author: "نورا", rating: 4 }
-];
+        <!-- كلمة تحفيزية -->
+        <div class="motivation-card" id="motivationText">✨</div>
 
-function showLoader(show) {
-    const loader = document.getElementById("loaderOverlay");
-    if (loader) loader.style.display = show ? "flex" : "none";
-}
-function showToast(msg) {
-    const toast = document.getElementById("toastNotification");
-    toast.innerHTML = msg;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 2000);
-}
+        <!-- شعار يومي -->
+        <div class="daily-badge" id="dailyBadge"></div>
 
-function renderProducts() {
-    const grid = document.getElementById("productsGrid");
-    if (!grid) return;
-    grid.innerHTML = "";
-    products.forEach((p, idx) => {
-        const card = document.createElement("div");
-        card.className = "product-card";
-        let bestBadge = p.bestSeller ? '<div class="best-seller-badge">⭐ الأكثر مبيعاً هذا الأسبوع</div>' : '';
-        let ratingStars = '';
-        for (let i = 1; i <= 5; i++) {
-            ratingStars += `<span class="rating-star ${i <= p.rating ? 'selected' : ''}" data-product="${idx}" data-star="${i}">★</span>`;
-        }
-        card.innerHTML = `
-            ${bestBadge}
-            <img class="product-media" src="${p.media}" alt="${p.name}" data-product-idx="${idx}">
-            <div class="product-name">${p.name}</div>
-            <div class="product-price">${p.price}</div>
-            <div class="rating">${ratingStars}</div>
-            <div class="share-buttons">
-                <button class="share-btn whatsapp-share" data-name="${p.name}" data-price="${p.price}">💬 واتساب</button>
-                <button class="share-btn copy-product" data-name="${p.name}">🔗 نسخ الرابط</button>
+        <!-- عداد تنازلي -->
+        <div class="countdown-wrapper glass" id="countdownSection">
+            <div class="countdown-title">🎉 عرض العيد الخاص — ينتهي قريباً!</div>
+            <div class="countdown-timer">
+                <div class="time-block"><span id="cdDays">00</span><label>أيام</label></div>
+                <div class="time-sep">:</div>
+                <div class="time-block"><span id="cdHours">00</span><label>ساعات</label></div>
+                <div class="time-sep">:</div>
+                <div class="time-block"><span id="cdMinutes">00</span><label>دقائق</label></div>
+                <div class="time-sep">:</div>
+                <div class="time-block"><span id="cdSeconds">00</span><label>ثواني</label></div>
             </div>
-        `;
-        grid.appendChild(card);
-    });
-    
-    // معاينة سريعة
-    document.querySelectorAll('.product-media').forEach(img => {
-        img.addEventListener('click', (e) => {
-            const idx = img.dataset.productIdx;
-            const p = products[idx];
-            document.getElementById("modalImg").src = p.media;
-            document.getElementById("modalName").innerText = p.name;
-            document.getElementById("modalPrice").innerText = p.price;
-            document.getElementById("quickViewModal").style.display = "flex";
-        });
-    });
-    
-    // تقييم النجوم
-    document.querySelectorAll('.rating-star').forEach(star => {
-        star.addEventListener('click', (e) => {
-            const productIdx = parseInt(star.dataset.product);
-            const starVal = parseInt(star.dataset.star);
-            products[productIdx].rating = starVal;
-            renderProducts();
-            const newTestimonial = {
-                text: `⭐ أعجبتني جداً ${products[productIdx].name} تستحق ${starVal} نجوم!`,
-                author: "عميلة جديدة",
-                rating: starVal
-            };
-            testimonials.unshift(newTestimonial);
-            renderTestimonials();
-            showToast("🎀 شكراً لتقييمك! رأيك ظهر في قسم الآراء");
-        });
-    });
-    
-    // مشاركة
-    document.querySelectorAll('.whatsapp-share').forEach(btn => {
-        btn.addEventListener('click', () => {
-            let name = btn.dataset.name;
-            let price = btn.dataset.price;
-            window.open(`https://wa.me/?text=${encodeURIComponent(`🛍️ أريد شراء ${name} بسعر ${price} من Velora 💖`)}`, '_blank');
-        });
-    });
-    document.querySelectorAll('.copy-product').forEach(btn => {
-        btn.addEventListener('click', () => {
-            let productName = btn.dataset.name;
-            navigator.clipboard.writeText(window.location.href + "?product=" + encodeURIComponent(productName));
-            showToast("✅ تم نسخ رابط المنتج");
-        });
-    });
-}
+        </div>
 
-function renderTestimonials() {
-    const grid = document.getElementById("testimonialsGrid");
-    if (!grid) return;
-    grid.innerHTML = "";
-    testimonials.slice(0, 6).forEach(t => {
-        let stars = '★'.repeat(t.rating) + '☆'.repeat(5-t.rating);
-        const div = document.createElement("div");
-        div.className = "testimonial-card";
-        div.innerHTML = `"${t.text}"<br>— ${t.author}<br><span style="color:gold">${stars}</span>`;
-        grid.appendChild(div);
-    });
-}
+        <!-- هيرو -->
+        <section id="home" class="hero">
+            <div class="hero-video-container">
+                <video id="heroVideo" autoplay muted loop playsinline poster="https://via.placeholder.com/800x400?text=Velora">
+                    <source src="https://l.top4top.io/m_3771sao671.mp4" type="video/mp4">
+                </video>
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="hero-text">
+                <h1 class="typing-logo" id="typingLogo">هدايا بالحب 🎀</h1>
+                <p>ورق، خيوط، ومشاعر ... نصنع لحظات لا تنسى لأحبائك</p>
+                <button class="cta-btn glow-on-hover" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">تسوقي الآن ✨</button>
+            </div>
+        </section>
 
-renderProducts();
-renderTestimonials();
+        <!-- مناسبات -->
+        <section id="occasions" class="occasions glass">
+            <h2>✦ اختاري هدية حسب المناسبة ✦</h2>
+            <div class="occasions-grid">
+                <div class="occasion-card" data-occasion="birthday">عيد ميلاد 🎂</div>
+                <div class="occasion-card" data-occasion="eid">بعد العيد 🕌</div>
+                <div class="occasion-card" data-occasion="engagement">خطوبة 💍</div>
+                <div class="occasion-card" data-occasion="wedding">ذكرى زواج 🕯️</div>
+                <div class="occasion-card" data-occasion="love">عيد حب 💘</div>
+                <div class="occasion-card" data-occasion="apology">اعتذار/صلح 🕊️</div>
+                <div class="occasion-card" data-occasion="distance">بعيد عنك ✈️</div>
+            </div>
+            <div id="occasionMessage" class="occasion-message"></div>
+        </section>
 
-// ------------------------------
-// 8. إغلاق المعاينة السريعة
-// ------------------------------
-document.querySelector(".close-modal")?.addEventListener("click", () => {
-    document.getElementById("quickViewModal").style.display = "none";
-});
-document.getElementById("modalOrderBtn")?.addEventListener("click", () => {
-    const name = document.getElementById("modalName").innerText;
-    window.open(`https://wa.me/?text=${encodeURIComponent(`أريد طلب ${name} من Velora 💖`)}`, '_blank');
-});
+        <!-- منتجات -->
+        <section id="products" class="products">
+            <h2>منتجاتنا اليدوية ✨</h2>
 
-// ------------------------------
-// 9. مشاركة الموقع
-// ------------------------------
-document.getElementById("shareWhatsappBtn")?.addEventListener("click", () => {
-    window.open(`https://wa.me/?text=${encodeURIComponent("مرحباً، تعالوا شوفوا هدايا Velora الجميلة: " + window.location.href)}`, '_blank');
-});
-document.getElementById("copyPageLinkBtn")?.addEventListener("click", () => {
-    navigator.clipboard.writeText(window.location.href);
-    showToast("🔗 تم نسخ رابط الموقع");
-});
+            <!-- شريط البحث والفلترة -->
+            <div class="products-controls">
+                <div class="search-bar-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="productSearch" placeholder="ابحثي عن منتج..." class="search-input">
+                </div>
+                <div class="filter-btns">
+                    <button class="filter-btn active" data-filter="all">الكل</button>
+                    <button class="filter-btn" data-filter="price-asc">الأقل سعراً ↑</button>
+                    <button class="filter-btn" data-filter="rating">الأعلى تقييماً ⭐</button>
+                    <button class="filter-btn" data-filter="bestseller">الأكثر مبيعاً 🏆</button>
+                </div>
+            </div>
 
-console.log("%c𝑽𝑬𝑳𝑶𝑹𝑨 | الموقع جاهز - متجاوب بالكامل مع لاب توب وموبايل 💖", "color:#c779b0; font-size:18px");
+            <div class="products-grid" id="productsGrid"></div>
+        </section>
+
+        <!-- مؤشر تحميل -->
+        <div id="loaderOverlay" class="loader-overlay" style="display: none;">
+            <div class="beating-heart">💗</div>
+        </div>
+
+        <!-- آراء بالصور -->
+        <section id="testimonials" class="testimonials glass">
+            <h2>💬 ماذا يقولون عنا؟</h2>
+            <div class="add-photo-review">
+                <label class="upload-review-btn" for="reviewPhotoInput">📸 أضيفي صورة هديتك + رأيك</label>
+                <input type="file" id="reviewPhotoInput" accept="image/*" style="display:none">
+                <input type="text" id="reviewTextInput" placeholder="اكتبي رأيك هنا..." class="review-text-input">
+                <input type="text" id="reviewNameInput" placeholder="اسمك" class="review-name-input">
+                <button class="cta-btn" id="submitReviewBtn" style="margin-top:8px;">نشر الرأي 💖</button>
+            </div>
+            <div class="testimonials-grid" id="testimonialsGrid"></div>
+        </section>
+
+        <!-- تواصل -->
+        <section id="contact" class="contact-section glass">
+            <h2>📞 تواصل معنا</h2>
+            <div class="social-bar">
+                <a href="https://www.instagram.com/velora0_3" target="_blank" class="social-icon insta">𝒊𝒏𝒔𝒕𝒂𝒈𝒓𝒂𝒎 📷</a>
+                <a href="https://www.tiktok.com/@velora_0_3?_r=1&_t=ZS-95x3MJL5T7Y" target="_blank" class="social-icon tiktok">𝑻𝑰𝑲 𝑻𝑶𝑲 🎵</a>
+                <button class="social-icon whatsapp" id="shareWhatsappBtn">مشاركة واتساب 💬</button>
+                <button class="social-icon copyLink" id="copyPageLinkBtn">نسخ رابط الموقع 🔗</button>
+            </div>
+        </section>
+
+        <footer>
+            <p>𝑽𝑬𝑳𝑶𝑹𝑨 | لأن الحب يستحق أن يُهدى بورق وخيط ❤️</p>
+        </footer>
+    </main>
+
+    <!-- شريط تنقل سفلي للموبايل -->
+    <div class="bottom-nav mobile-only" id="bottomNav">
+        <a href="#home" class="bottom-nav-item">🏠<span>الرئيسية</span></a>
+        <a href="#products" class="bottom-nav-item">🎁<span>المنتجات</span></a>
+        <a href="#testimonials" class="bottom-nav-item">💬<span>الآراء</span></a>
+        <a href="#contact" class="bottom-nav-item">📞<span>تواصل</span></a>
+    </div>
+
+    <!-- Toast -->
+    <div id="toastNotification" class="toast-notification"></div>
+
+    <!-- معاينة سريعة -->
+    <div id="quickViewModal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-modal">&times;</span>
+            <img id="modalImg" src="" alt="">
+            <h3 id="modalName"></h3>
+            <p id="modalPrice"></p>
+            <p id="modalDesc" class="modal-desc">هدية يدوية مصنوعة بحب من ورق وخيوط. تنقش باسمكما وتوصلك مغلقة بوردة.</p>
+            <button id="modalOrderBtn" class="cta-btn">أطلبه الآن 💖</button>
+        </div>
+    </div>
+
+    <!-- سلة المشتريات -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content glass" style="max-width:500px;">
+            <span class="close-modal" id="closeCart">&times;</span>
+            <h2 style="margin-bottom:16px;">🛒 سلة المشتريات</h2>
+            <div id="cartItems"></div>
+            <div class="cart-total" id="cartTotal"></div>
+            <button class="cta-btn" id="cartCheckoutBtn" style="width:100%;margin-top:16px;">إتمام الطلب عبر واتساب 💬</button>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content glass" style="max-width:600px;max-height:90vh;overflow-y:auto;">
+            <span class="close-modal" id="closeAdmin">&times;</span>
+            <h2>🛡️ لوحة التحكم — Velora Admin</h2>
+            <div class="admin-stats" id="adminStats"></div>
+            <hr style="margin:18px 0;border-color:#f0c0e0;">
+            <h3 style="margin-bottom:12px;">➕ إضافة منتج جديد</h3>
+            <div class="admin-form">
+                <input type="text" id="adminName" placeholder="اسم المنتج" class="admin-input">
+                <input type="text" id="adminPrice" placeholder="السعر (مثال: 30$)" class="admin-input">
+                <input type="text" id="adminMedia" placeholder="رابط الصورة" class="admin-input">
+                <label class="admin-check"><input type="checkbox" id="adminBestSeller"> أكثر مبيعاً ⭐</label>
+                <button class="cta-btn" id="adminAddBtn">إضافة المنتج ✅</button>
+            </div>
+            <hr style="margin:18px 0;border-color:#f0c0e0;">
+            <h3 style="margin-bottom:12px;">📦 المنتجات الحالية</h3>
+            <div id="adminProductsList"></div>
+            <hr style="margin:18px 0;border-color:#f0c0e0;">
+            <h3 style="margin-bottom:12px;">📋 سجل النشاط (Logs)</h3>
+            <div id="adminLogs" class="admin-logs"></div>
+        </div>
+    </div>
+
+    <!-- زر خفي للأدمن -->
+    <div id="adminTrigger" class="admin-trigger" title="Admin"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
